@@ -12,9 +12,38 @@ export default function HomeScreen({ navigation, route }) {
   const [busNumber, setBusNumber] = useState(route.params.recBusNumber);
   const [busStop, setBusStop] = useState(route.params.recBusStop);
   const [BUSSTOP_URL, setBUSSTOP_URL] = useState("https://arrivelah2.busrouter.sg/?id=" + busStop);
+  //var interval = 0;
+
+  useEffect(() => {
+
+    // This sets up the top right button
+    navigation.setOptions({
+      title: "Bus App",
+      headerTitleAlign: "center",
+      headerTitleStyle: {
+        fontWeight: "bold",
+        fontSize: 24,
+        color: "black",
+      },
+      headerStyle: {
+        height: 80,
+        backgroundColor: "gray",
+      },      
+    });
+    
+//    interval = setInterval(loadBusStopData, 15000);
+    const interval = setInterval(loadBusStopData, 15000);
+
+    loadBusStopData(); // load immediately when start instead of waiting for interval
+
+    // Return the function to run when unmouting
+    return () => clearInterval(interval);
+  }, []);
 
   // This will retrive data using API
   function loadBusStopData() {
+//    console.log("busStop: " + busStop + " busNumber: " + busNumber);
+
     // Turn on the loading indicator each time
     setLoading(true);
 
@@ -34,35 +63,6 @@ export default function HomeScreen({ navigation, route }) {
       });
   }  
 
-  useEffect(() => {
-
-    // This sets up the top right button
-    navigation.setOptions({
-      title: "Bus App",
-      headerTitleAlign: "center",
-      headerTitleStyle: {
-        fontWeight: "bold",
-        fontSize: 24,
-        color: "black",
-      },
-      headerStyle: {
-        height: 80,
-        backgroundColor: "gray",
-      },      
-    });
-    
-    const interval = setInterval(loadBusStopData, 15000);
-
-    loadBusStopData(); // load immediately when start instead of waiting for interval
-
-    // Return the function to run when unmouting
-    return () => clearInterval(interval);
-
-    return () => {
-    };
-
-  }, []);
-
   // Return formatted date
   function dateConvert(time) {
     const day = new Date(time);
@@ -72,10 +72,12 @@ export default function HomeScreen({ navigation, route }) {
     return timeArranged;
   }
 
+  // Note, this can't work as the timer still running
   function submitPressed(recBusNumber) {
     
     Keyboard.dismiss();
 
+    clearInterval(interval);
     setBusNumber(recBusNumber);
     loadBusStopData();
     // Clear the text input box
@@ -103,7 +105,8 @@ export default function HomeScreen({ navigation, route }) {
         <TouchableOpacity style={[ styles.button, styles.refreshButton ]} onPress={() => refreshPressed()}>
           <Text style={styles.buttonText}>Refresh</Text>
         </TouchableOpacity>
-        <Text style={styles.textLabel}>Bus Stop</Text>
+{/*
+        <Text style={styles.textLabel}>New Bus Number Query</Text>        
         <View style={styles.textInputView}>
           <TextInput
             placeholder= "Enter bus number here..."
@@ -131,6 +134,7 @@ export default function HomeScreen({ navigation, route }) {
             />
           </TouchableOpacity>
         </View>
+*/}        
     </View>
   );
 }
@@ -152,11 +156,11 @@ const styles = StyleSheet.create({
     width: "60%",
     padding: 10,
     borderColor: "#ccc",
-    marginRight: 6,
+    marginRight: 10,
   },
   textInputView: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',    
   },    
   button: {
