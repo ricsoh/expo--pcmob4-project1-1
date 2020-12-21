@@ -5,19 +5,23 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export default function HomeScreen({ navigation }) {
 
   const [busStop, setBusStop] = useState("");
+  const [busNumber, setBusNumber] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  function submitPressed(recBusStop) {
-    if(recBusStop.length != 6) {
-      setErrorMessage("Error! Please enter 6 digits.")
+  function submitPressed(recBusStop, recBusNumber) {
+
+    // Check if 5 digits
+    if(recBusStop.length != 5) {
+      setErrorMessage("Error! Please enter 5 digits.")
       return;
-    }else {
-      // goto bus stop screen with bus stop number
-      navigation.navigate("BusStop", {recBusStop});
-      // Clear the text input box
-      setBusStop("");
-      setErrorMessage("");
     }
+
+    // goto bus stop screen with bus stop number
+    navigation.navigate("BusStop", {recBusStop, recBusNumber});
+    // Clear the text input box
+    setBusStop("");
+    setBusNumber("");
+    setErrorMessage("");
   }
 
   return (
@@ -31,7 +35,7 @@ export default function HomeScreen({ navigation }) {
           value={busStop}
           onChangeText={(input) => setBusStop(input)}
           keyboardType= "number-pad"
-          maxLength= {6}
+          maxLength= {5}
         >
         </TextInput>
         <TouchableOpacity onPress={() => setBusStop("")}>
@@ -43,8 +47,27 @@ export default function HomeScreen({ navigation }) {
           />
         </TouchableOpacity>                
       </View>
+      <View style={styles.textInputView}>
+        <TextInput
+          placeholder= "Enter bus number here..."
+          style= {styles.textInput}
+          value={busNumber}
+          onChangeText={(input) => setBusNumber(input)}
+          keyboardType= "number-pad"
+          maxLength= {5}
+        >
+        </TextInput>
+        <TouchableOpacity onPress={() => setBusNumber("")}>
+          <MaterialCommunityIcons
+            name="close-circle-outline"
+            size={32}
+            color="gray"
+            style={{ marginRight: 20 }}
+          />
+        </TouchableOpacity>                
+      </View>
       <Text style= { styles.errorText }>{errorMessage}</Text>      
-      <TouchableOpacity style= { styles.button } onPress={() => submitPressed(busStop)}>
+      <TouchableOpacity style= { styles.button } onPress={() => submitPressed(busStop, busNumber)}>
         <Text style= { styles.buttonText }>Submit</Text>
       </TouchableOpacity>
     </View>
