@@ -5,9 +5,19 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export default function HomeScreen({ navigation }) {
 
   const [busStop, setBusStop] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  function submitPressed() {
-    navigation.navigate("BusStop");
+  function submitPressed(recBusStop) {
+    if(recBusStop.length != 6) {
+      setErrorMessage("Error! Please enter 6 digits.")
+      return;
+    }else {
+      // goto bus stop screen with bus stop number
+      navigation.navigate("BusStop", {recBusStop});
+      // Clear the text input box
+      setBusStop("");
+      setErrorMessage("");
+    }
   }
 
   return (
@@ -16,11 +26,12 @@ export default function HomeScreen({ navigation }) {
       <Text style= { styles.textLabel }>Bus Stop Number</Text>
       <View style={styles.textInputView}>
         <TextInput
-          placeholder= "Enter number here..."
+          placeholder= "Enter 6 digit number here..."
           style= {styles.textInput}
           value={busStop}
           onChangeText={(input) => setBusStop(input)}
           keyboardType= "number-pad"
+          maxLength= {6}
         >
         </TextInput>
         <TouchableOpacity onPress={() => setBusStop("")}>
@@ -31,8 +42,9 @@ export default function HomeScreen({ navigation }) {
             style={{ marginRight: 20 }}
           />
         </TouchableOpacity>                
-      </View>      
-      <TouchableOpacity style= { styles.button } onPress={() => submitPressed()}>
+      </View>
+      <Text style= { styles.errorText }>{errorMessage}</Text>      
+      <TouchableOpacity style= { styles.button } onPress={() => submitPressed(busStop)}>
         <Text style= { styles.buttonText }>Submit</Text>
       </TouchableOpacity>
     </View>
@@ -67,13 +79,19 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 5,
     backgroundColor: "blue",
   },
   buttonText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "white",
+    textAlign: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    color: "red",
+    height: 30,
     textAlign: 'center',
   },
 });

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, route }) {
 
-  const [busStop, setBusStop] = useState("xxxxxx");
+  const [busStop, setBusStop] = useState(route.params.recBusStop);
 
   useEffect(() => {
 
     // This sets up the top right button
     navigation.setOptions({
-      title: "Bus App ( " + (busStop) + " )",
+      title: "Bus App",
       headerTitleAlign: "center",
       headerTitleStyle: {
         fontWeight: "bold",
@@ -30,16 +30,21 @@ export default function HomeScreen({ navigation }) {
 
   return (
 
-    <View style={styles.container}>
-      <Text style= { styles.textLabel }>Bus Stop Screen</Text>
+    <View style={ styles.container }>
+      <View style= {{ alignItems: 'center', justifyContent: 'center', width: '100%', height: '10%' }}>
+        <Text style= { styles.textLabel }>Bus Stop - {busStop}</Text>
+      </View>
+      <View style= {{ alignItems: 'center', width: '100%', height: '90%' }}>
+        <Text style= { styles.textLabel }>Flatlist for available bus number here</Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
+//    flex: 1,
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
