@@ -1,25 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function HomeScreen({ navigation }) {
 
-  function submitPressed() {
-    navigation.navigate("BusStop");
-  }
+  const [busStop, setBusStop] = useState("xxxxxx");
+
+  useEffect(() => {
+
+    // This sets up the top right button
+    navigation.setOptions({
+      title: "Bus App ( " + (busStop) + " )",
+      headerTitleAlign: "center",
+      headerTitleStyle: {
+        fontWeight: "bold",
+        fontSize: 24,
+        color: "black",
+      },
+      headerStyle: {
+        height: 80,
+        backgroundColor: "gray",
+      },      
+    });
+    
+    return () => {
+
+    };
+
+  }, []);
 
   return (
 
     <View style={styles.container}>
-      <Text style= { styles.textLabel }>Bus Stop Number</Text>
-      <TextInput
-        placeholder= "Enter number here..."
-        style= {styles.textInput}
-        keyboardType= "number-pad"
-      >
-      </TextInput>
-      <TouchableOpacity style= { styles.button } onPress={() => submitPressed()}>
-        <Text style= { styles.buttonText }>Submit</Text>
-      </TouchableOpacity>
+      <Text style= { styles.textLabel }>Bus Stop Screen</Text>
     </View>
   );
 }
