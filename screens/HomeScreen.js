@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function HomeScreen({ navigation }) {
+
+  const [busStop, setBusStop] = useState("");
 
   function submitPressed() {
     navigation.navigate("BusStop");
@@ -11,12 +14,24 @@ export default function HomeScreen({ navigation }) {
 
     <View style={styles.container}>
       <Text style= { styles.textLabel }>Bus Stop Number</Text>
-      <TextInput
-        placeholder= "Enter number here..."
-        style= {styles.textInput}
-        keyboardType= "number-pad"
-      >
-      </TextInput>
+      <View style={styles.textInputView}>
+        <TextInput
+          placeholder= "Enter number here..."
+          style= {styles.textInput}
+          value={busStop}
+          onChangeText={(input) => setBusStop(input)}
+          keyboardType= "number-pad"
+        >
+        </TextInput>
+        <TouchableOpacity onPress={() => setBusStop("")}>
+          <MaterialCommunityIcons
+            name="close-circle-outline"
+            size={32}
+            color="gray"
+            style={{ marginRight: 20 }}
+          />
+        </TouchableOpacity>                
+      </View>      
       <TouchableOpacity style= { styles.button } onPress={() => submitPressed()}>
         <Text style= { styles.buttonText }>Submit</Text>
       </TouchableOpacity>
@@ -35,15 +50,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   textInput: {
-    alignItems: 'center',
-    width: '60%',
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 2,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 10,
+    margin: 20,
+    borderWidth: 1,
+    width: "60%",
+    padding: 10,
+    borderColor: "#ccc",
+    marginRight: 6,
   },
+  textInputView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',    
+  },    
   button: {
     width: 100,
     padding: 10,
