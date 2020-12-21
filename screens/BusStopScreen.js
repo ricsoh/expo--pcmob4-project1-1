@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, TextInput } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, TextInput, Keyboard } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function HomeScreen({ navigation, route }) {
@@ -73,6 +73,8 @@ export default function HomeScreen({ navigation, route }) {
   }
 
   function submitPressed(recBusNumber) {
+    
+    Keyboard.dismiss();
 
     setBusNumber(recBusNumber);
     loadBusStopData();
@@ -86,7 +88,6 @@ export default function HomeScreen({ navigation, route }) {
 
   return (
     <View style={ styles.container }>
-      <View style={{ alignItems: 'center', justifyContent: 'center', height: '70%'}}>
         <Text style={styles.textLabel}>Bus Stop</Text>
         <Text style={styles.arrivalInfo}>{busStop}</Text>
         <Text style={styles.textLabel}>Bus Number</Text>
@@ -102,8 +103,7 @@ export default function HomeScreen({ navigation, route }) {
         <TouchableOpacity style={[ styles.button, styles.refreshButton ]} onPress={() => refreshPressed()}>
           <Text style={styles.buttonText}>Refresh</Text>
         </TouchableOpacity>
-      </View>
-      <View style={{ alignItems: 'center', justifyContent: 'center', height: '30%'}}>
+        <Text style={styles.textLabel}>Bus Stop</Text>
         <View style={styles.textInputView}>
           <TextInput
             placeholder= "Enter bus number here..."
@@ -117,16 +117,20 @@ export default function HomeScreen({ navigation, route }) {
           <TouchableOpacity onPress={() => setBusTempNumber("")}>
             <MaterialCommunityIcons
               name="close-circle-outline"
-              size={32}
+              size={36}
               color="gray"
               style={{ marginRight: 20 }}
             />
           </TouchableOpacity>                
+          <TouchableOpacity onPress={() => submitPressed(busTempNumber)}>
+            <MaterialCommunityIcons
+              name="location-enter"
+              size={36}
+              color="blue"
+              style={{ marginRight: 20 }}
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style= {[ styles.button, styles.submitButton ]} onPress={() => submitPressed(busTempNumber)}>
-          <Text style= { styles.buttonText }>Submit</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -161,9 +165,7 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     marginTop: 0,
-    backgroundColor: "blue",
-  },
-  submitButton: {
+    marginBottom: 20,
     backgroundColor: "blue",
   },
   refreshButton: {
