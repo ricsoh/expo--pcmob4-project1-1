@@ -37,7 +37,8 @@ export default function BusStopScreen({ navigation, route }) {
     loadBusStopData();  // Force start, not waiting for timer to start
 
     // Return the function to run when unmouting
-    return () => clearInterval(intervalID);     // Stop the timer
+    return () => stopTimer(); // Stop the timer
+//    return () => clearInterval(intervalID);     // Stop the timer
   }, []);
 
   // This will retrive data using API
@@ -78,15 +79,15 @@ export default function BusStopScreen({ navigation, route }) {
   function submitPressed(recBusStop, recBusNumber) {
 
     if (debug == 'true') {
-      console.log("submitPressed => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
+      console.log("submitPressed => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + recBusNumber);
     }
     
-    // Set the new bus number
-    setBusNumber(recBusNumber);
     // Clear the text input box
     setBusTempNumber("");
     // Hid the keyboard
     Keyboard.dismiss();
+    // Set the new bus number
+    setBusNumber(recBusNumber);
 
     // stop timer, set timer and reload data
     refreshData();
@@ -95,15 +96,26 @@ export default function BusStopScreen({ navigation, route }) {
   // stop timer, set timer and reload data
   function refreshData() {
 
+    // Stop the timer
+    stopTimer();
+//    clearInterval(intervalID);
+
     if (debug == 'true') {
       console.log("refreshData => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
     }
     
-    // Stop the timer
-    clearInterval(intervalID);
     // Start the timer set state id
     setIntervalID(setInterval(loadBusStopData, 15000));
     loadBusStopData();  // Force start, not waiting for timer to start
+  }
+
+  function stopTimer() {
+    if (debug == 'true') {
+      console.log("stopTimer => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
+    }
+
+    // Stop the timer
+    clearInterval(intervalID);
   }
 
   return (
