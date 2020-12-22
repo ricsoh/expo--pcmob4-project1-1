@@ -12,7 +12,7 @@ export default function BusStopScreen({ navigation, route }) {
   const [busNumber, setBusNumber] = useState(route.params.recBusNumber);
   const [busStop, setBusStop] = useState(route.params.recBusStop);
   const [BUSSTOP_URL, setBUSSTOP_URL] = useState("https://arrivelah2.busrouter.sg/?id=" + busStop);
-  //var interval = 0;
+  const [intervalID, setIntervalID] = useState("");
 
   useEffect(() => {
 
@@ -31,18 +31,17 @@ export default function BusStopScreen({ navigation, route }) {
       },      
     });
     
-//    interval = setInterval(loadBusStopData, 15000);
-    const interval = setInterval(loadBusStopData, 15000);
-
-    loadBusStopData(); // load immediately when start instead of waiting for interval
+    // Start the timer set state id
+    setIntervalID(setInterval(loadBusStopData, 15000));
+    loadBusStopData();  // Force start, not waiting for timer to start
 
     // Return the function to run when unmouting
-    return () => clearInterval(interval);
+    return () => clearInterval(intervalID);     // Stop the timer
   }, []);
 
   // This will retrive data using API
   function loadBusStopData() {
-//    console.log("busStop: " + busStop + " busNumber: " + busNumber);
+    console.log("loadBusStopData => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
 
     // Turn on the loading indicator each time
     setLoading(true);
@@ -72,20 +71,32 @@ export default function BusStopScreen({ navigation, route }) {
     return timeArranged;
   }
 
-  // Note, this can't work as the timer still running
-  function submitPressed(recBusNumber) {
-    
-    Keyboard.dismiss();
+  // Stop timer, set bus number, reload data and start timer
+  function submitPressed(recBusStop, recBusNumber) {
 
-    clearInterval(interval);
+    console.log("submitPressed => Interval: " + intervalID + " recBusStop: " + recBusStop + " recBusNumber: " + recBusNumber);
+    
+    // Set the new bus number
     setBusNumber(recBusNumber);
-    loadBusStopData();
     // Clear the text input box
     setBusTempNumber("");
+    // Hid the keyboard
+    Keyboard.dismiss();
+
+    // stop timer, set timer and reload data
+    refreshData();
   }
 
-  function refreshPressed() {
-    loadBusStopData();
+  // stop timer, set timer and reload data
+  function refreshData() {
+
+    console.log("refreshData = > Interval: " + intervalID + " recBusStop: " + busStop + " recBusNumber: " + busNumber);
+    
+    // Stop the timer
+    clearInterval(intervalID);
+    // Start the timer set state id
+    setIntervalID(setInterval(loadBusStopData, 15000));
+    loadBusStopData();  // Force start, not waiting for timer to start
   }
 
   return (
@@ -102,10 +113,10 @@ export default function BusStopScreen({ navigation, route }) {
         <Text style={styles.arrivalInfo}>
           {loading ? <ActivityIndicator size="large" color="blue"/> : dateConvert(seqArrival)} ( {seqArrivalMinutes} mins )
         </Text>
-        <TouchableOpacity style={[ styles.button, styles.refreshButton ]} onPress={() => refreshPressed()}>
+        <TouchableOpacity style={[ styles.button, styles.refreshButton ]} onPress={() => refreshData()}>
           <Text style={styles.buttonText}>Refresh</Text>
         </TouchableOpacity>
-{/*
+        {/* Below for chnaging bus number on particular bus stop */}
         <Text style={styles.textLabel}>New Bus Number Query</Text>        
         <View style={styles.textInputView}>
           <TextInput
@@ -125,7 +136,7 @@ export default function BusStopScreen({ navigation, route }) {
               style={{ marginRight: 20 }}
             />
           </TouchableOpacity>                
-          <TouchableOpacity onPress={() => submitPressed(busTempNumber)}>
+          <TouchableOpacity onPress={() => submitPressed(busStop, busTempNumber)}>
             <MaterialCommunityIcons
               name="location-enter"
               size={36}
@@ -134,8 +145,8 @@ export default function BusStopScreen({ navigation, route }) {
             />
           </TouchableOpacity>
         </View>
-*/}        
-    </View>
+        {/* Below for chnaging bus number on particular bus stop */}
+      </View>
   );
 }
 
