@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, TextInput, Keyboard } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function HomeScreen({ navigation, route }) {
+export default function BusStopScreen({ navigation, route }) {
   const [loading, setLoading] = useState(true);
   const [arrival, setArrival] = useState("");
   const [arrivalMinutes, setArrivalMinutes] = useState("");
