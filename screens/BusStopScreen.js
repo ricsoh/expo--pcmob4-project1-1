@@ -13,6 +13,7 @@ export default function BusStopScreen({ navigation, route }) {
   const [busStop, setBusStop] = useState(route.params.recBusStop);
   const [BUSSTOP_URL, setBUSSTOP_URL] = useState("https://arrivelah2.busrouter.sg/?id=" + busStop);
   const [intervalID, setIntervalID] = useState("");
+  const [debug, setdebug] = useState("true"); // set to "false" to stop console.log and reload
 
   useEffect(() => {
 
@@ -41,7 +42,9 @@ export default function BusStopScreen({ navigation, route }) {
 
   // This will retrive data using API
   function loadBusStopData() {
-    console.log("loadBusStopData => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
+    if (debug == 'true') {
+      console.log("loadBusStopData => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
+    }
 
     // Turn on the loading indicator each time
     setLoading(true);
@@ -74,7 +77,9 @@ export default function BusStopScreen({ navigation, route }) {
   // Stop timer, set bus number, reload data and start timer
   function submitPressed(recBusStop, recBusNumber) {
 
-    console.log("submitPressed => Interval: " + intervalID + " recBusStop: " + recBusStop + " recBusNumber: " + recBusNumber);
+    if (debug == 'true') {
+      console.log("submitPressed => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
+    }
     
     // Set the new bus number
     setBusNumber(recBusNumber);
@@ -90,7 +95,9 @@ export default function BusStopScreen({ navigation, route }) {
   // stop timer, set timer and reload data
   function refreshData() {
 
-    console.log("refreshData = > Interval: " + intervalID + " recBusStop: " + busStop + " recBusNumber: " + busNumber);
+    if (debug == 'true') {
+      console.log("refreshData => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
+    }
     
     // Stop the timer
     clearInterval(intervalID);
