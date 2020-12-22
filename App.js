@@ -33,6 +33,21 @@ export default function App() {
         <Stack.Screen
           name= "BusStop"
           component= {BusStopScreen}
+          options= {
+            {
+              headerTitle: "Bus App",
+              headerTitleAlign: "center",
+              headerTitleStyle: {
+                fontWeight: "bold",
+                fontSize: 24,
+                color: "black",
+              },
+              headerStyle: {
+                height: 80,
+                backgroundColor: "gray",
+              },            
+            }
+          }
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -12,36 +12,27 @@ export default function BusStopScreen({ navigation, route }) {
   const [busNumber, setBusNumber] = useState(route.params.recBusNumber);
   const [busStop, setBusStop] = useState(route.params.recBusStop);
   const [BUSSTOP_URL, setBUSSTOP_URL] = useState("https://arrivelah2.busrouter.sg/?id=" + busStop);
-  const [intervalID, setIntervalID] = useState("");
   const [debug, setdebug] = useState("true"); // set to "false" to stop console.log and reload
+  const [isRunning, setIsRunning] = useState(true);
+  var intervalID;
 
+  // ****************************************
+  // Start when loaded
+  // ****************************************
   useEffect(() => {
-
-    // This sets up the top right button
-    navigation.setOptions({
-      title: "Bus App",
-      headerTitleAlign: "center",
-      headerTitleStyle: {
-        fontWeight: "bold",
-        fontSize: 24,
-        color: "black",
-      },
-      headerStyle: {
-        height: 80,
-        backgroundColor: "gray",
-      },      
-    });
-    
     // Start the timer set state id
-    setIntervalID(setInterval(loadBusStopData, 15000));
-    loadBusStopData();  // Force start, not waiting for timer to start
+    if(isRunning) {
+      intervalID = setInterval(loadBusStopData, 15000);
+      loadBusStopData();  // Not waiting for timer to start reload
+    }
 
     // Return the function to run when unmouting
-    return () => stopTimer(); // Stop the timer
-//    return () => clearInterval(intervalID);     // Stop the timer
-  }, []);
+    return () => clearInterval(intervalID); // Stop the timer
+  }, [isRunning]);
 
+  // ****************************************
   // This will retrive data using API
+  // ****************************************
   function loadBusStopData() {
     if (debug == 'true') {
       console.log("loadBusStopData => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
@@ -66,7 +57,9 @@ export default function BusStopScreen({ navigation, route }) {
       });
   }  
 
+  // ****************************************
   // Return formatted date
+  // ****************************************
   function dateConvert(time) {
     const day = new Date(time);
     let [hour, minute, second] = day.toLocaleTimeString("en-US").split(":");
@@ -75,47 +68,52 @@ export default function BusStopScreen({ navigation, route }) {
     return timeArranged;
   }
 
+  // ****************************************
   // Stop timer, set bus number, reload data and start timer
-  function submitPressed(recBusStop, recBusNumber) {
+  // ****************************************
+  function submitPressed(recBusNumber) {
 
     if (debug == 'true') {
       console.log("submitPressed => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + recBusNumber);
     }
-    
+
     // Clear the text input box
     setBusTempNumber("");
     // Hid the keyboard
     Keyboard.dismiss();
+
+    // Stop the timer
+    setIsRunning(false);
+
     // Set the new bus number
     setBusNumber(recBusNumber);
 
-    // stop timer, set timer and reload data
-    refreshData();
+    // reload data
+    loadBusStopData();
+
+    // Start the timer
+    setIsRunning(true);
+
+//    navigation.navigate("BusStop", {recBusStop, recBusNumber});
   }
 
+  // ****************************************
   // stop timer, set timer and reload data
+  // ****************************************
   function refreshData() {
-
-    // Stop the timer
-    stopTimer();
-//    clearInterval(intervalID);
 
     if (debug == 'true') {
       console.log("refreshData => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
     }
-    
-    // Start the timer set state id
-    setIntervalID(setInterval(loadBusStopData, 15000));
-    loadBusStopData();  // Force start, not waiting for timer to start
-  }
-
-  function stopTimer() {
-    if (debug == 'true') {
-      console.log("stopTimer => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
-    }
-
+   
     // Stop the timer
-    clearInterval(intervalID);
+    setIsRunning(false);
+
+    // reload data
+    loadBusStopData();
+
+    // Start the timer
+    setIsRunning(true);
   }
 
   return (
@@ -135,7 +133,7 @@ export default function BusStopScreen({ navigation, route }) {
         <TouchableOpacity style={[ styles.button, styles.refreshButton ]} onPress={() => refreshData()}>
           <Text style={styles.buttonText}>Refresh</Text>
         </TouchableOpacity>
-        {/* Below for chnaging bus number on particular bus stop */}
+        {/* Below for changing bus number on current bus stop */}
         <Text style={styles.textLabel}>New Bus Number Query</Text>        
         <View style={styles.textInputView}>
           <TextInput
@@ -155,7 +153,7 @@ export default function BusStopScreen({ navigation, route }) {
               style={{ marginRight: 20 }}
             />
           </TouchableOpacity>                
-          <TouchableOpacity onPress={() => submitPressed(busStop, busTempNumber)}>
+          <TouchableOpacity onPress={() => submitPressed(busTempNumber)}>
             <MaterialCommunityIcons
               name="location-enter"
               size={36}
@@ -164,7 +162,7 @@ export default function BusStopScreen({ navigation, route }) {
             />
           </TouchableOpacity>
         </View>
-        {/* Below for chnaging bus number on particular bus stop */}
+        {/* Below for changing bus number on current bus stop */}
       </View>
   );
 }
