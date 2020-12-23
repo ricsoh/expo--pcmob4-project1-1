@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, TextInput, Keyboard } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function BusStopScreen({ navigation, route }) {
+export default function BusScreen({ navigation, route }) {
   const [loading, setLoading] = useState(true);
   const [arrival, setArrival] = useState("");
   const [arrivalMinutes, setArrivalMinutes] = useState("");
@@ -12,7 +12,7 @@ export default function BusStopScreen({ navigation, route }) {
   const [busNumber, setBusNumber] = useState(route.params.recBusNumber);
   const [busStop, setBusStop] = useState(route.params.recBusStop);
   const [BUSSTOP_URL, setBUSSTOP_URL] = useState("https://arrivelah2.busrouter.sg/?id=" + busStop);
-  const [debug, setdebug] = useState("true"); // set to "false" to stop console.log and reload
+  const [debug, setdebug] = useState(true); // set to "false" to stop console.log and reload
   const [isRunning, setIsRunning] = useState(true);
   var intervalID;
 
@@ -22,19 +22,23 @@ export default function BusStopScreen({ navigation, route }) {
   useEffect(() => {
     // Start the timer set state id
     if(isRunning) {
+      if (debug) { console.log("mounted!"); }
       intervalID = setInterval(loadBusStopData, 15000);
       loadBusStopData();  // Not waiting for timer to start reload
     }
 
     // Return the function to run when unmouting
-    return () => clearInterval(intervalID); // Stop the timer
+    return () => {
+      clearInterval(intervalID); // Stop the timer
+      if (debug) { console.log("unmounted!"); }
+    }
   }, [isRunning]);
 
   // ****************************************
   // This will retrive data using API
   // ****************************************
   function loadBusStopData() {
-    if (debug == 'true') {
+    if (debug) {
       console.log("loadBusStopData => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
     }
 
@@ -73,7 +77,7 @@ export default function BusStopScreen({ navigation, route }) {
   // ****************************************
   function submitPressed(recBusNumber) {
 
-    if (debug == 'true') {
+    if (debug) {
       console.log("submitPressed => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + recBusNumber);
     }
 
@@ -82,19 +86,45 @@ export default function BusStopScreen({ navigation, route }) {
     // Hid the keyboard
     Keyboard.dismiss();
 
+    // 2nd function will complete 1st function first before starting 2nd function
+    secondFunction(recBusNumber);
+
     // Stop the timer
-    setIsRunning(false);
+//    setIsRunning(false);
 
     // Set the new bus number
-    setBusNumber(recBusNumber);
+//    setBusNumber(recBusNumber);
 
     // reload data
-    loadBusStopData();
+//    loadBusStopData();
 
     // Start the timer
-    setIsRunning(true);
+//    setIsRunning(true);
+  }
 
-//    navigation.navigate("BusStop", {recBusStop, recBusNumber});
+  // ****************************************
+  // Use callback
+  // ****************************************
+  function firstFunction(_callback) {
+    // Stop the timer
+    setIsRunning(false);
+    if(debug) { console.log("1st function completed!"); }
+    _callback();
+  }
+
+  // ****************************************
+  // Use callback
+  // ****************************************
+  function secondFunction(recBusNumber) {
+    firstFunction(function() {
+      // Set the new bus number
+      setBusNumber(recBusNumber);
+      // reload data
+      loadBusStopData();
+      // Start the timer
+      setIsRunning(true);
+      if(debug) { console.log("2nd function completed!"); }
+    });    
   }
 
   // ****************************************
@@ -102,7 +132,7 @@ export default function BusStopScreen({ navigation, route }) {
   // ****************************************
   function refreshData() {
 
-    if (debug == 'true') {
+    if (debug) {
       console.log("refreshData => Interval: " + intervalID + " busStop: " + busStop + " busNumber: " + busNumber);
     }
    

@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./screens/HomeScreen"
-import BusStopScreen from "./screens/BusStopScreen"
+import BusScreen from "./screens/BusScreen"
 
 const Stack = createStackNavigator();
 
@@ -31,8 +31,8 @@ export default function App() {
           }
         />
         <Stack.Screen
-          name= "BusStop"
-          component= {BusStopScreen}
+          name= "Bus"
+          component= {BusScreen}
           options= {
             {
               headerTitle: "Bus App",
@@ -48,7 +48,7 @@ export default function App() {
               },            
             }
           }
-        />
+        />       
       </Stack.Navigator>
     </NavigationContainer>
   );

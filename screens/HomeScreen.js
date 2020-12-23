@@ -17,7 +17,7 @@ export default function HomeScreen({ navigation }) {
     }
 
     // goto bus stop screen with bus stop number
-    navigation.navigate("BusStop", {recBusStop, recBusNumber});
+    navigation.navigate("Bus", {recBusStop, recBusNumber});
     // Clear the text input box
     setBusStop("");
     setBusNumber("");
@@ -30,7 +30,7 @@ export default function HomeScreen({ navigation }) {
       <Text style= { styles.textLabel }>Bus Stop Number</Text>
       <View style={styles.textInputView}>
         <TextInput
-          placeholder= "Enter 6 digit number here..."
+          placeholder= "Enter 5 digit number here..."
           style= {styles.textInput}
           value={busStop}
           onChangeText={(input) => setBusStop(input)}
@@ -47,6 +47,7 @@ export default function HomeScreen({ navigation }) {
           />
         </TouchableOpacity>                
       </View>
+      <Text style= { styles.textLabel }>Bus Number</Text>
       <View style={styles.textInputView}>
         <TextInput
           placeholder= "Enter bus number here..."
